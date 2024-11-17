@@ -1,0 +1,164 @@
+
+namespace Create_Read_Update_Delete
+{
+    internal class Program
+    {
+        public static List<string> cardNumbers = new List<string>();
+        public static string Language = "uz";
+        public static void ChooseLanguage()
+        {
+            Console.WriteLine("Choose Language : \n 1 : Uzbek \n 2 : English");
+            Console.Write("Enter number :");
+            var choice = Console.ReadLine();
+            var Language = String.Empty;
+            if (choice == "1")
+            {
+                Language = "uz";
+            }
+            else
+            {
+                Language = "en";
+            }
+            Console.Clear();
+        }
+        public static void DataSeed()
+        {
+            cardNumbers.Add("8600123456781234");
+            cardNumbers.Add("5614123456781234");
+            cardNumbers.Add("5215123456781234");
+            cardNumbers.Add("9123123456781234");
+            cardNumbers.Add("8686123456781234");
+        }
+        static void Main(string[] args)
+        {
+            ChooseLanguage();
+            DataSeed();
+            StartFrontEnd();
+        }
+        public static int StartFrontEnd()
+        {
+            while (true)
+            {
+                Console.WriteLine(Language == "uz" ? "1 Card raqamni qo'shish : "
+                    : "1 Add card number : ");
+                Console.WriteLine(Language == "uz" ? "2 Card raqamni o'chirish : "
+                    : "2 Delete card number : ");
+                Console.WriteLine(Language == "uz" ? "3 Card raqamni yangilash : " :
+                    "3 Update card number : ");
+                Console.WriteLine(Language == "uz" ? "4 Card raqamni ko'rsatish : " :
+                    "4 Read card number : ");
+                Console.Write(Language == "uz" ? "Tanlang : " : "Choose : ");
+                var option = int.Parse(Console.ReadLine());
+                if (option == 1)
+                {
+                    Console.Write(Language == "uz" ? "Card raqamni kiriting : " :
+                        "Enter card number : ");
+                    var cardNumber = Console.ReadLine();
+                    var index = AddCardNumber(cardNumber);
+                    if (index == -1)
+                    {
+                        Console.WriteLine(Language == "uz" ? "Card raqam qo'shilmadi" :
+                            " Card number not added");
+                    }
+                    else
+                    {
+                        Console.WriteLine(Language == "uz" ? "Muavvafiqiyatli,card raqam qo'shildi" :
+                            "Succecffuly, card number added");
+                    }
+                }
+                else if (option == 2)
+                {
+                    Console.Write(Language == "uz" ? "O'chirmoqchi bo'lgan card raqamni kiriting : " :
+                        "Enter deleted card number : ");
+                    var cardNumber = Console.ReadLine();
+                    var boolResponse = DeleteCardNumber(cardNumber);
+                    if (boolResponse is true)
+                    {
+                        Console.WriteLine(Language == "uz" ? "Card raqam o'chirildi" : "Deleted card number");
+                    }
+                    else
+                    {
+                        Console.WriteLine(Language == "uz" ? "Xatolik , card raqam o'chirilmadi" :
+                            "Error card number not deleted");
+                    }
+                }
+                else if (option == 3)
+                {
+                    Console.Write(Language == "uz" ? "Eski card raqamni kiriting : " :
+                        "Enter old card number : ");
+                    var oldCardNumber = Console.ReadLine();
+                    Console.Write(Language == "uz" ? "Yang card raqamni kiriting : " :
+                        "Enter new card number : ");
+                    var newCardNumber = Console.ReadLine();
+                    var boolResponse = UpdateCardNumber(oldCardNumber, newCardNumber);
+                    if (boolResponse is true)
+                    {
+                        Console.WriteLine(Language == "uz" ? "Card raqam yangilandi" :
+                            "Card number updated");
+                    }
+                    else
+                    {
+                        Console.WriteLine(Language == "uz" ? "Xatolik, card raqam yangilanmadi" :
+                            "Error, card number not updated");
+                    }
+                }
+                else if (option == 4)
+                {
+                    var numbers = GetCardNumbers();
+                    foreach (var number in numbers)
+                    {
+                        Console.WriteLine(number);
+                    }
+                }
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }
+        public static int AddCardNumber(string cardNumber)
+        {
+            var exists = cardNumbers.Contains(cardNumber);
+            var IsValidFormat = CheckCardNumber(cardNumber);
+            if (exists is true || IsValidFormat is false)
+            {
+                return -1;
+            }
+            cardNumbers.Add(cardNumber);
+            return cardNumbers.Count - 1;
+        }
+        public static bool CheckCardNumber(string digit)
+        {
+            for (int i = 0; i < cardNumbers.Count; i++)
+            {
+                if (!char.IsDigit(digit[i]) && digit.Length != 16)
+                {
+                    return false;
+                }
+
+            }
+            return true;
+        }
+        public static bool DeleteCardNumber(string cardNumber)
+        {
+            var exist = cardNumbers.Contains(cardNumber);
+            cardNumbers.Remove(cardNumber);
+            return exist;
+        }
+        public static List<string> GetCardNumbers()
+        {
+            return cardNumbers;
+        }
+        public static bool UpdateCardNumber(string oldcardNumber, string newCardNumber)
+        {
+            var index = cardNumbers.IndexOf(oldcardNumber);
+            var boolResponse = false;
+            var IsValidFormat = CheckCardNumber(newCardNumber);
+            if (index < 0 || IsValidFormat is false)
+            {
+                return false;
+            }
+            cardNumbers[index] = newCardNumber;
+            ;
+            return true;
+        }
+    }
+}
